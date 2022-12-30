@@ -1,0 +1,11 @@
+X = Queue()
+
+X.enqueue(5)
+X.enqueue(5)
+X.enqueue(5)
+
+X.dequeue()
+
+output X
+output X
+output X
