@@ -1,10 +1,15 @@
-sub fibonacci(N)
-    if N<2 then
-        return 1
+STOCK = [1,4,68,2,4,5,9,23,5,99]
+COUNT = 0
+TOTAL = 0
+loop N from 0 to len(STOCK)-1
+    if STOCK[N] > 0 then
+        COUNT = COUNT + 1
+        TOTAL = TOTAL + STOCK[N]
     end if
-    return fibonacci(N-2) + fibonacci(N-1)
-end sub
-
-loop I from 0 to 7
-    output fibonacci(I)
 end loop
+if COUNT != 0 then
+    AVERAGE = TOTAL / COUNT
+    output "Average = " , AVERAGE
+else
+    output "There are no non-zero values"
+end if

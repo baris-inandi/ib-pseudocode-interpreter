@@ -25,6 +25,7 @@ pub fn to_ir(code: String) -> String {
             out.push_str(&format!("{}while __until_flag or {}:\n", spaces, args));
             out.push_str(&format!("{}{}__until_flag = False\n", spaces, spaces));
         } else if l.starts_with("loop") {
+            // TODO: change this because this doesn't work for statements with spaces in them, since there is [5] used, "len(x) -1" has "len(x)" as index 5 and "-1" as index 6
             // for loop
             let spaces = line.split("loop").next().unwrap();
             let re = Regex::new(r"loop \w from \s*.*\s* to \s*.*\s*$").unwrap();

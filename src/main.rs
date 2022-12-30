@@ -2,6 +2,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::exit;
+pub mod ibps_std;
 pub mod to_ir;
 
 use pyo3::prelude::*;
@@ -21,39 +22,7 @@ fn main() -> PyResult<()> {
 
     let contents = fs::read_to_string(&filepath).expect("cannot read file");
 
-    let header = String::from(
-        r"from queue import LifoQueue as PyQueue
-from collections import deque as PyStack
-class Queue(PyQueue):
-    def __init__(self):
-        super().__init__()
-    def dequeue(self):
-        return super().get()
-    def enqueue(self, item):
-        super().put(item)
-    def __str__(self):
-        return 'Queue' + str(list(self.queue))
-class Stack(PyStack):
-    def __init__(self):
-        super().__init__()
-    def pop(self):
-        return super().pop()
-    def push(self, item):
-        super().append(item)
-    def __str__(self):
-        return 'Stack' + str(list(self))
-class Collection:
-    def __init__(self):
-        self.inner = []
-output = print
-null = None
-nil = None
-none = None
-true = True
-false = False
-",
-    );
-
+    let header = ibps_std::generate_stdlib();
     let pycode = format!(
         r#"
 def run(*args, **kwargs):
@@ -68,7 +37,7 @@ def run(*args, **kwargs):
 
     // println!("{pycode}");
 
-    Python::with_gil(|py| {
+    Python::with_gil(|py| -> Result<(), PyErr> {
         let fun: Py<PyAny> = PyModule::from_code(py, &pycode, &filepath, &filename)?
             .getattr("run")?
             .into();
