@@ -1,11 +1,10 @@
-X = Queue()
+sub fibonacci(N)
+    if N<2 then
+        return 1
+    end if
+    return fibonacci(N-2) + fibonacci(N-1)
+end sub
 
-X.enqueue(5)
-X.enqueue(5)
-X.enqueue(5)
-
-X.dequeue()
-
-output X
-output X
-output X
+loop I from 0 to 7
+    output fibonacci(I)
+end loop
