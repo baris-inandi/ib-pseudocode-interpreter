@@ -1,15 +1,22 @@
-STOCK = [1,4,68,2,4,5,9,23,5,99]
-COUNT = 0
-TOTAL = 0
-loop N from 0 to len(STOCK)-1
-    if STOCK[N] > 0 then
-        COUNT = COUNT + 1
-        TOTAL = TOTAL + STOCK[N]
-    end if
-end loop
-if COUNT != 0 then
-    AVERAGE = TOTAL / COUNT
-    output "Average = " , AVERAGE
-else
-    output "There are no non-zero values"
-end if
+a = Array(5,5)
+output a
+a = Array()
+output a
+a = Array(2)
+output a
+
+b = Queue()
+b.enqueue(10)
+b.enqueue(20)
+output b
+
+c = Stack()
+c.push(4)
+c.push(5)
+c.push(6)
+c.pop()
+output c
+
+// d = Collection(1,2)
+// d.addItem(3)
+// output d

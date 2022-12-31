@@ -9,7 +9,7 @@ pub fn to_ir(code: String) -> String {
         if l.starts_with("output") {
             let spaces = line.split("output").next().unwrap();
             let args = line.split("output").nth(1).unwrap_or("").trim();
-            out.push_str(&format!("{}print({})\n", spaces, args));
+            out.push_str(&format!("{}output({})\n", spaces, args)); // TODO: this might not work
         } else if l.starts_with("input") {
             let spaces = line.split("input").next().unwrap();
             let args = line.split("input").nth(1).unwrap_or("").trim();

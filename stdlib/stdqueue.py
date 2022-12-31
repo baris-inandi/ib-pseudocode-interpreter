@@ -1,25 +1,23 @@
-from queue import Queue as PyQueue
+from pprint import pformat  # stdlibignore
 
 
-class Queue(PyQueue):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def dequeue(self):
-        return super().get()
-
-    def enqueue(self, item):
-        super().put(item)
-        return item
+class Queue:
+    def __init__(self, *args):
+        self.inner = []
+        for arg in args:
+            self.enqueue(arg)
 
     def isEmpty(self):
-        return super().empty()
+        return self.inner == []
 
-    def __str__(self) -> str:
-        out = ""
-        for i in range(self.qsize()):
-            out += f"{self.queue[i]}, "
-        if self.qsize() > 0:
-            out = out[:-2]
-        out = "Queue[" + out + "]"
-        return out
+    def __len__(self):
+        return len(self.inner)
+
+    def enqueue(self, item):
+        self.inner.insert(0, item)
+
+    def dequeue(self):
+        return self.inner.pop()
+
+    def __repr__(self):
+        return "Queue" + pformat(self.inner)

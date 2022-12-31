@@ -2,10 +2,12 @@ use std::env;
 use std::fs;
 use std::path::Path;
 use std::process::exit;
-pub mod ibps_std;
+pub mod remove_comments;
+pub mod stdlib;
 pub mod to_ir;
 
 use pyo3::prelude::*;
+use remove_comments::remove_comments;
 
 fn main() -> PyResult<()> {
     let filepath = env::args().nth(1).unwrap_or_else(|| {
@@ -20,9 +22,8 @@ fn main() -> PyResult<()> {
             .unwrap_or(""),
     );
 
-    let contents = fs::read_to_string(&filepath).expect("cannot read file");
-
-    let header = ibps_std::generate_stdlib();
+    let contents = remove_comments(&fs::read_to_string(&filepath).expect("cannot read file"));
+    let header = stdlib::generate_stdlib();
     let pycode = format!(
         r#"
 def run(*args, **kwargs):
