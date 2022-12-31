@@ -46,4 +46,4 @@ class Stack:
         return out
 
     def __repr__(self):
-        return "Stack" + pformat(self.list())
+        return "Stack" + str(self.list())

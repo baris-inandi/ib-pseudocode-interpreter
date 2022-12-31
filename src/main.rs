@@ -3,13 +3,13 @@ use std::fs;
 use std::path::Path;
 use std::process::exit;
 pub mod remove_comments;
+pub mod run;
 pub mod stdlib;
 pub mod to_ir;
 
-use pyo3::prelude::*;
 use remove_comments::remove_comments;
 
-fn main() -> PyResult<()> {
+fn main() {
     let filepath = env::args().nth(1).unwrap_or_else(|| {
         println!("Usage: ibps <path>");
         exit(1)
@@ -23,30 +23,20 @@ fn main() -> PyResult<()> {
     );
 
     let contents = remove_comments(&fs::read_to_string(&filepath).expect("cannot read file"));
-    let header = stdlib::generate_stdlib();
-    let pycode = format!(
-        r#"
-def run(*args, **kwargs):
-{}
-"#,
-        format!("{}\n{}", header, to_ir::to_ir(contents))
-            .lines()
-            .map(|line| format!("    {}", line))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
+    let stdlib = stdlib::generate_stdlib();
+    let mut pycode = format!("{}{}", stdlib, to_ir::to_ir(contents));
+    pycode = pycode
+        .lines()
+        .filter(|line| line.trim().len() > 0)
+        .collect::<Vec<&str>>()
+        .join("\n");
 
-    // println!("{pycode}");
+    // println!("{}", pycode);
 
-    Python::with_gil(|py| -> Result<(), PyErr> {
-        let fun: Py<PyAny> = PyModule::from_code(py, &pycode, &filepath, &filename)?
-            .getattr("run")?
-            .into();
-
-        fun.call0(py).unwrap_or_else(|e: PyErr| {
-            e.print_and_set_sys_last_vars(py);
-            exit(1)
-        });
-        Ok(())
-    })
+    match run::run_py(&pycode, &filename) {
+        Ok(_) => {}
+        Err(_) => {
+            exit(1);
+        }
+    };
 }

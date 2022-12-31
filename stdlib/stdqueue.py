@@ -20,4 +20,4 @@ class Queue:
         return self.inner.pop()
 
     def __repr__(self):
-        return "Queue" + pformat(self.inner)
+        return "Queue" + str(self.inner)

@@ -14,5 +14,6 @@ pub fn generate_stdlib() -> String {
     stdlib.push_str(&to_valid(std::include_str!("../stdlib/stdqueue.py")));
     stdlib.push_str(&to_valid(std::include_str!("../stdlib/stdstack.py")));
     stdlib.push_str(&to_valid(std::include_str!("../stdlib/stdarr.py")));
+    stdlib.push_str("\n");
     stdlib
 }
