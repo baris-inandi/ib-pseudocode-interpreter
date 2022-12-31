@@ -15,14 +15,19 @@ pub fn to_ir(code: String) -> String {
             let args = line.split("input").nth(1).unwrap_or("").trim();
             out.push_str(&format!("{}input({})\n", spaces, args));
         } else if l.starts_with("loop while") {
+            let colon = if l.ends_with(":") { "" } else { ":" };
             let spaces = line.split("loop while").next().unwrap();
             let args = line.split("loop while").nth(1).unwrap_or("").trim();
-            out.push_str(&format!("{}while {}:\n", spaces, args));
+            out.push_str(&format!("{}while {}{}\n", spaces, args, colon));
         } else if l.starts_with("loop until") {
+            let colon = if l.ends_with(":") { "" } else { ":" };
             let spaces = line.split("loop until").next().unwrap();
             let args = line.split("loop until").nth(1).unwrap_or("").trim();
             out.push_str(&format!("{}__until_flag = True\n", spaces));
-            out.push_str(&format!("{}while __until_flag or {}:\n", spaces, args));
+            out.push_str(&format!(
+                "{}while __until_flag or {}{}\n",
+                spaces, args, colon
+            ));
             out.push_str(&format!("{}{}__until_flag = False\n", spaces, spaces));
         } else if l.starts_with("loop") {
             // TODO: change this because this doesn't work for statements with spaces in them, since there is [5] used, "len(x) -1" has "len(x)" as index 5 and "-1" as index 6
@@ -52,7 +57,8 @@ pub fn to_ir(code: String) -> String {
                 continue;
             }
             let args = line.split("loop").nth(1).unwrap_or("").trim();
-            out.push_str(&format!("{}for {}:\n", spaces, args));
+            let colon = if l.ends_with(":") { "" } else { ":" };
+            out.push_str(&format!("{}for {}{}\n", spaces, args, colon));
         } else if l.starts_with("if") {
             // turn "if condition then" to "if condition:"
             let mut tokens: Vec<&str> = l.split_whitespace().collect();
@@ -60,7 +66,8 @@ pub fn to_ir(code: String) -> String {
             if *tokens.get(tokens.len() - 1).unwrap_or(&"") == "then" {
                 tokens.pop();
             }
-            out.push_str(&format!("{}{}:\n", spaces, tokens.join(" ")))
+            let colon = if l.ends_with(":") { "" } else { ":" };
+            out.push_str(&format!("{}{}{}\n", spaces, tokens.join(" "), colon));
         } else if l.starts_with("else if") {
             let mut tokens: Vec<&str> = l.split_whitespace().collect();
             tokens.remove(0);
@@ -69,29 +76,35 @@ pub fn to_ir(code: String) -> String {
             if *tokens.get(tokens.len() - 1).unwrap_or(&"") == "then" {
                 tokens.pop();
             }
+            let colon = if l.ends_with(":") { "" } else { ":" };
             out.push_str(&format!(
-                "{}{}:\n",
+                "{}{}{}\n",
                 line.split("else if").next().unwrap(),
-                tokens.join(" ")
+                tokens.join(" "),
+                colon
             ));
         } else if l.starts_with("else") {
             let mut tokens: Vec<&str> = l.split_whitespace().collect();
             if *tokens.get(tokens.len() - 1).unwrap_or(&"") == "then" {
                 tokens.pop();
             }
+            let colon = if l.ends_with(":") { "" } else { ":" };
             out.push_str(&format!(
-                "{}{}:\n",
+                "{}{}{}\n",
                 line.split("else").next().unwrap(),
-                tokens.join(" ")
+                tokens.join(" "),
+                colon
             ));
         } else if l.starts_with("sub") {
             let args = l.split("sub").nth(1).unwrap_or("").trim();
             let spaces = line.split("sub").next().unwrap();
-            out.push_str(&format!("{}def {}:\n", spaces, args));
+            let colon = if l.ends_with(":") { "" } else { ":" };
+            out.push_str(&format!("{}def {}{}\n", spaces, args, colon));
         } else if l.starts_with("function") {
             let args = l.split("function").nth(1).unwrap_or("").trim();
             let spaces = line.split("function").next().unwrap();
-            out.push_str(&format!("{}def {}:\n", spaces, args));
+            let colon = if l.ends_with(":") { "" } else { ":" };
+            out.push_str(&format!("{}def {}{}\n", spaces, args, colon));
         } else if l.starts_with("end ") {
             out.push_str("\n");
             continue;

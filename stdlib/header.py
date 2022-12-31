@@ -5,4 +5,4 @@ null = None
 none = None
 true = True
 false = False
-output = pprint
+output = print
