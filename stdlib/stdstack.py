@@ -1,6 +1,3 @@
-from pprint import pformat  # stdlibignore
-
-
 class IBPSStackNode:
     def __init__(self, data):
         self.data = data

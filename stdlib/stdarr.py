@@ -1,6 +1,3 @@
-from pprint import pformat  # stdlibignore
-
-
 def Array(*dimensions):
     if len(dimensions) < 1:
         return []

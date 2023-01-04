@@ -51,7 +51,7 @@ pub fn to_ir(code: String) -> String {
 
                 // Build the output string
                 out.push_str(&format!(
-                    "{}for {} in range({}, {} + 1):\n",
+                    "{}for {} in range({}, int({})+1):\n",
                     spaces, loop_variable, start, end
                 ));
                 continue;

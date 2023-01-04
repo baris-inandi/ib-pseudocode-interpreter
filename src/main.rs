@@ -22,7 +22,10 @@ fn main() {
             .unwrap_or(""),
     );
 
-    let contents = remove_comments(&fs::read_to_string(&filepath).expect("cannot read file"));
+    let contents = remove_comments(&fs::read_to_string(&filepath).unwrap_or_else(|_| {
+        eprintln!("No such file or directory");
+        exit(1)
+    }));
     let stdlib = stdlib::generate_stdlib();
     let mut pycode = format!("{}{}", stdlib, to_ir::to_ir(contents));
     pycode = pycode
@@ -36,6 +39,7 @@ fn main() {
     match run::run_py(&pycode, &filename) {
         Ok(_) => {}
         Err(_) => {
+            eprintln!("Runtime error");
             exit(1);
         }
     };

@@ -1,6 +1,3 @@
-from pprint import pformat  # stdlibignore
-
-
 class Queue:
     def __init__(self, *args):
         self.inner = []
@@ -13,8 +10,9 @@ class Queue:
     def __len__(self):
         return len(self.inner)
 
-    def enqueue(self, item):
-        self.inner.insert(0, item)
+    def enqueue(self, *item):
+        for i in item:
+            self.inner.insert(0, i)
 
     def dequeue(self):
         return self.inner.pop()
